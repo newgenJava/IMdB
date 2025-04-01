@@ -1,92 +1,91 @@
 package com.newgen.user.model;
 
-import java.time.LocalDate;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
-import jakarta.validation.constraints.Size;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-//@Entity 
-public class User {
-	
-	private Integer id;
-	
-	@Size(min = 5, message = "minimum size should be 5")
-	private String name;
-	
-	private String email;
-	
-	private String username;
-	
-	private String password;
-	
-	private LocalDate birthDate;
-	
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Entity
+@Table(name = "users")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+public class User implements UserDetails {
+
 	public User(int id, String name) {
 		super();
 		this.id = id;
-		this.name = name;
+		this.fullName = name;
 	}
 
-	public Integer getId() {
-		return id;
-	}
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Integer id;
+	
+	@Column(nullable = false)
+	private String fullName;
+	
+	@Email
+	@Column(unique = true, length = 100, nullable = false)
+	private String email;
 
-	public void setId(int id) {
-		this.id = id;
-	}
+	@Column(nullable = false)
+	private String password;
 
-	public String getName() {
-		return name;
-	}
+	@CreationTimestamp
+	@Column(updatable = false, name = "created_at")
+	private Date createdAt;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+	@UpdateTimestamp
+	@Column(name = "updated_at")
+	private Date updatedAt;
 
-	public String getEmail() {
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		// TODO Auto-generated method stub
+		return List.of();
+	}
+	
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+
+	@Override
+	public String getUsername() {
 		return email;
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public LocalDate getBirthDate() {
-		return birthDate;
-	}
-
-	public void setBirthDate(LocalDate birthDate) {
-		this.birthDate = birthDate;
-	}
-
-	public User(int id, String name, String email, String username,
-			String password, LocalDate birthDate) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.email = email;
-		this.username = username;
-		this.password = password;
-		this.birthDate = birthDate;
-	}
-
-	public User() {
-		super();
-	}
-	
-	
-	
-	
 
 }
